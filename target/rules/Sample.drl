@@ -1,0 +1,92 @@
+package com.sample
+ 
+import com.sample.Klima;
+
+rule "klima snage 9000 BTU mala kvadratura, jedna prostorija"
+    when
+        klima: Klima (velicinaStana <= 50 && brojProstorijaZaHladjenje == Klima.JEDNA &&
+        				snaga == 0)
+    then
+        klima.setSnaga(9000);
+        update( klima );
+end
+
+
+rule "klima snage 12000 BTU mala kvadratura, vise prostorija"
+    when
+        klima: Klima (velicinaStana <= 50 && brojProstorijaZaHladjenje == Klima.VISE &&
+        				snaga == 0)
+    then
+        klima.setSnaga(12000);
+        update( klima );
+end
+
+rule "klima snage 12000 BTU srednja kvadratura, jedna prostorija"
+    when
+        klima: Klima (velicinaStana > 50 && velicinaStana < 75 && brojProstorijaZaHladjenje == Klima.JEDNA &&
+        				snaga == 0)
+    then
+        klima.setSnaga(12000);
+        update( klima );
+end
+
+rule "klima snage 18000 BTU srednja kvadratura, vise prostorija"
+    when
+        klima: Klima (velicinaStana > 50 && velicinaStana < 75 && brojProstorijaZaHladjenje == Klima.VISE &&
+        				snaga == 0)
+    then
+        klima.setSnaga(18000);
+        update( klima );
+end
+
+rule "klima snage 18000 BTU velika kvadratura"
+    when
+        klima: Klima (velicinaStana >= 75 && snaga == 0)
+    then
+        klima.setSnaga(18000);
+        update( klima );
+end
+
+rule "klima pokretna - hladi/greje se vise prostorija, nije mogucna ugradnja na zid"
+    when
+        klima: Klima (brojProstorijaZaHladjenje == Klima.VISE && mogucnostUgradjanjeNaZid == false &&
+        				tip == null)
+    then
+        klima.setTip(Klima.OBICNA);
+        update( klima );
+end
+
+rule "klima prozorna - hladi/greje se jedna prostorija, nije mogucna ugradnja na zid"
+    when
+        klima: Klima (brojProstorijaZaHladjenje == Klima.JEDNA && mogucnostUgradjanjeNaZid == false &&
+        				tip == null)
+    then
+        klima.setTip(Klima.PROZORNA);
+        update( klima );
+end
+
+rule "inverter da, ako je samo grejanje ili dvostruko"
+    when
+        klima: Klima (svrha != Klima.HLADJENJE,svrha != true)
+    then
+        klima.setHasInverter(true)
+        update( klima );
+end
+
+rule "inverter da, ako je samo grejanje ili dvostruko"
+    when
+        klima: Klima (svrha == Klima.HLADJENJE,temperatura < -5,svrha != true)
+    then
+        klima.setHasInverter(true)
+        update( klima );
+end
+
+
+
+
+
+
+
+
+
+
